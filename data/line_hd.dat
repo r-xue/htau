@@ -1,0 +1,18 @@
+;1  The first column is the upper electronic state 
+;2  (2=Lyman (B-X), 3= Werner (C-X))
+;3  nup is the upper vibrational level 
+;4  npp is the lower vibrational level 
+;5  Jup is the upper rotational level 
+;6  Jpp is the lower rotational level 
+;7  
+;8
+;9   nup  npp Jup Jpp      wave         f           gu     gamma         label  rank 
+1  2   0   0   1   0   1105.86    0.000744    1   1.90000e+09   L0-0R(0)   0
+52 2   3   0   1   0   1066.271   0.0114000   1   1.00000e+09   L3-0R(0)   0
+69 2   4   0   1   0   1054.286   0.0161000   1   1.00000e+09   L4-0R(0)   0
+70 2   4   0   2   1   1054.727   0.0107000   9   1.00000e+09   L4-0R(1)   1
+86 2   5   0   1   0   1042.847   0.0200000   1   1.00000e+09   L5-0R(0)   0
+103 2  6   0   1   0   1031.909   0.0280000   1   1.00000e+09   L6-0R(0)   0
+120 2  7   0   1   0   1021.453   0.0242000   1   1.00000e+09   L7-0R(0)   0
+137 2  8   0   1   0   1011.457   0.0244000   1   1.00000e+09   L8-0R(0)   0
+

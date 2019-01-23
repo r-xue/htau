@@ -1,25 +1,25 @@
 #### High-Resolution Molecular Hydrgogen Optical Depth Templates
-
+-----------------
 
 ###### /templates
------------------
+
 
 H2/HI optical depth templates in the FITS format.
 
 ###### /pro
 
-IDL prcoedures for creating the templates
+IDL prcoedures for creating the templates locally
 
 ###### /data
 
 I have adopted the atomic and molecular hydrogen/deuterium data implemented the Meudon PDR code,
-available [here](https://luthsvn.obspm.fr/PDRDEV/branches/1.6/data/UVdata).
-See the explanation below on the data format (also see PXDR_INITIAL.f90).
+available [here](http://pdr.obspm.fr/).
+A brief explanation on the data format is below. Additional details can be found in PXDR_INITIAL.f90 found in the Meudon PDR source code).
 
 * H2 data
 
-  - uvh2b29.dat : *Lyman Bands* (B-X)  :   1st electronic state -> 2nd electronic state
-  - uvh2c20.dat : *Werner Bands* (C-X) :   3rd electronic state -> 1st electronic state
+  - uvh2b29.dat : *Lyman Bands* (B-X)  :   1st electronic state X -> 2nd electronic state B
+  - uvh2c20.dat : *Werner Bands* (C-X) :   1st electronic state X -> 3rd electronic state C
 
     * c1:     Index
     * c2:     1=Lyman;  2=Werner
@@ -35,14 +35,14 @@ See the explanation below on the data format (also see PXDR_INITIAL.f90).
     * c9:     gamma=inverse radiative lifetime of upper level (s-1)
     * c10:    dissociation probability of upper level
 
-   - The transition label can be created:
-
+   - The transition label can be created: 
+   
     > *bandname* *c5*-*c3* R/P/Q *abs(c6)*
+    
+   - g_nj: 
 
-   - g_nj:
-
-    >if (j mod 2) eq 0 then g_nj=2*nj+1
-    >if (j mod 2) eq 1 then g_nj=3*(2*nj+1)
+    >if (j mod 2) eq 0 then g_nj=2*nj+1  
+    >if (j mod 2) eq 1 then g_nj=3*(2*nj+1)  
 
 * HD data
 
@@ -57,14 +57,14 @@ See the explanation below on the data format (also see PXDR_INITIAL.f90).
     * c8:     dummy
     * c9:     gamma
     * c11:    dummy
-    * c12:    *
+    * c12:    dummy
 
   - The transition label can be created:
   > *bandname* *c4*-*c2* R/P/Q *abs(c5)*
 
   - g_nj:
 
-  > if (j mod 2) eq 0 then g_nj=2*nj+1
+  > if (j mod 2) eq 0 then g_nj=2*nj+1  
   > if (j mod 2) eq 1 then g_nj=3*(2*nj+1)
 
 * HI/DI data
@@ -80,7 +80,8 @@ See the explanation below on the data format (also see PXDR_INITIAL.f90).
 
 
 ```
-Note: The atomic/molecular data are also available from other sources in slightly different table formats:
+
+Note: The atomic/molecular data are also available from other sources in different table formats:
 
 * h2gui package by J. Tumlinson
 

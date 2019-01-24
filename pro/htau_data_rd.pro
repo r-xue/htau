@@ -14,7 +14,7 @@ if  n_elements(path) eq 0 then begin
     path=''
     tmp='/opt/astroph/mpdr/PDRLight_1.0/data/UVdata/'
     if  file_test(tmp) then path=tmp
-    tmp=cgSourceDir()+'../data/uvdata/'
+    tmp=cgSourceDir()+'../data/'
     if  file_test(tmp) then path=tmp
 endif else begin
     if  ~file_test(path) then path='' 

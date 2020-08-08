@@ -5,6 +5,7 @@ PRO HTAU_PLOT_HMARKER,vv,yrange
 COMMON htau,htau_data,htau_grid
 cspeed=!CONST.C/1d3
 
+xyouts,'!6'
 ;+
 ; ylevel:   y level where tick marks will grow
 ; lev:      1 = upper line, ticks grow down
@@ -22,12 +23,32 @@ cspeed=!CONST.C/1d3
 ;ylevel=[2.5,-1.5,2.0,-1.0,0.3,1.3,-0.3]
 ;ticklen=[0.5,0.5,0.5,0.5,0.3,0.3,0.2,0.2]
 
-cvel=[vv[0],vv[1],vv[0],vv[1],vv[0],vv[1]]
-spec=['H2','H2','H I','H I','HD','HD']
-lev=[1,-1,1,-1,-1,-1]
-cc=['blue','red','blue','red','blue','red']
-ylevel=[0.9,0.1,0.6,0.3,0.0,0.0]*(yrange[1]-yrange[0])+yrange[0]
-ticklen=[0.1,0.1,0.1,0.1,0.05,0.05]*(yrange[1]-yrange[0])
+if  n_elements(vv) eq 1 then begin
+    cvel=[vv[0],vv[0],vv[0]]
+    spec=['H2','H I','HD']
+    lev=[1,1,-1]
+    cc=['blue','red','red']
+    ylevel=[0.9,0.6,0.0]*(yrange[1]-yrange[0])+yrange[0]
+    ticklen=[0.1,0.1,0.05]*(yrange[1]-yrange[0])
+endif
+
+if  n_elements(vv) eq 1 then begin
+    cvel=[vv[0],vv[0],vv[0]]
+    spec=['H2','H I']
+    lev=[1,1]
+    cc=['blue','red']
+    ylevel=[0.9,0.6]*(yrange[1]-yrange[0])+yrange[0]
+    ticklen=[0.1,0.1]*(yrange[1]-yrange[0])
+endif
+
+if  n_elements(vv) eq 2 then begin
+    cvel=[vv[0],vv[1],vv[0],vv[1],vv[0],vv[1]]
+    spec=['H2','H2','H I','H I','HD','HD']
+    lev=[1,-1,1,-1,-1,-1]
+    cc=['blue','red','blue','red','blue','red']
+    ylevel=[0.9,0.1,0.6,0.3,0.0,0.0]*(yrange[1]-yrange[0])+yrange[0]
+    ticklen=[0.1,0.1,0.1,0.1,0.05,0.05]*(yrange[1]-yrange[0])
+endif
 
 if  n_elements(vv) eq 3 then begin
     cvel=[vv[0],vv[1],vv[2],vv[0],vv[1],vv[2],vv[0],vv[1],vv[2]]
@@ -54,9 +75,9 @@ endif
 ;T=SYSTIME(1)
 tag=where(htau_data.nl eq 'X' and $
     htau_data.nvl eq '0' and $
-    float(htau_data.nvu) le 10 and $
+    float(htau_data.nvu) le 50 and $
     (htau_data.spec eq 'H2' or htau_data.spec eq 'HD') and $
-    float(htau_data.njl) le 4)
+    float(htau_data.njl) le 50)
 ; and strmid(htau_data.name,4,4) ne 'P(3)' 
 htau_data_nl=(htau_data.nl)[tag]
 htau_data_nu=(htau_data.nu)[tag]
@@ -82,9 +103,11 @@ if  spec[s] eq 'H I' or spec[s] eq 'D I' then begin
         wls=wl[k]*cspeed/(cspeed-cvel[s])-wl[k]
         oplot,[wl[k],wl[k]]+wls,ylevel[s]+[0.0,-ticklen[s]*lev[s]],color=cgcolor(cc[s])
         ;print,[wl[k],wl[k]]+wls
-        ;if  lev[s] eq 1 and nu[k] le 8 then $
-            ;xyouts,wl[k]+wls,ylevel[s]+ticklen[s]*lev[s]*1.2,name[k],$
-            ;ori=90,color=cgcolor(cc[s]),charsize=0.7
+        if  lev[s] eq 1 and nu[k] le 8 then begin
+            xyouts,wl[k]+wls,ylevel[s]+ticklen[s]*lev[s]*1.2,name[k],$
+                ori=90,color=cgcolor(cc[s]),charsize=2.0
+            print,name[k]
+        endif
     endfor
 endif
 
@@ -95,10 +118,10 @@ endif
 
 ; FOR H2 or HD
 nu_loop=['B','C']
-nvu_loop=strtrim(indgen(12),2)
+nvu_loop=strtrim(indgen(30),2)
 
 if  spec[s] eq 'H2' or spec[s] eq 'HD' then begin
-    if spec[s] eq 'H2' then jmax=4.0
+    if spec[s] eq 'H2' then jmax=6.0
     if spec[s] eq 'HD' then jmax=1.0
     ;
     for i=0,n_elements(nu_loop)-1 do begin
@@ -123,7 +146,7 @@ if  spec[s] eq 'H2' or spec[s] eq 'HD' then begin
                     oplot,[wl[k],wl[k]]+wls,ylevel[s]+adj+[0.,-ticklen[s]]*lev[s]*ticklen_scale,color=cgcolor(cc[s])
                     lc=[lc,wl[k]+wls]
                     if not (spec[s] eq 'H2' and cvel[s] gt 100)  then continue
-                    ;xyouts,[wl[k],wl[k]]+(min(wls)+max(wls))/2,0.9,strmid(name[k],4,4),charsize=0.7,ori=0,noclip=1,ali=0.5
+                    xyouts,[wl[k],wl[k]]+(min(wls)+max(wls))/2,0.9,strmid(name[k],4,4),charsize=0.7,ori=0,noclip=1,ali=0.5
                     
                 endfor
                 oplot,[min(lc),max(lc)],[ylevel[s],ylevel[s]]+adj,color=cgcolor(cc[s])
@@ -131,7 +154,7 @@ if  spec[s] eq 'H2' or spec[s] eq 'HD' then begin
                     if nu_loop[i] eq 'B' then bandname='L'
                     if nu_loop[i] eq 'C' then bandname='W'
                     bandname=bandname+nvu_loop[j]+'-0'
-                    ;xyouts,[min(lc)+max(lc)]/2,ylevel[s]+adj,bandname,ali=0.5
+                    xyouts,[min(lc)+max(lc)]/2,ylevel[s]+adj,bandname,ali=0.5
                 endif
             endif
             

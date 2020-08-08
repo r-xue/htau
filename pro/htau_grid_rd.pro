@@ -19,7 +19,7 @@ PRO HTAU_GRID_RD,PATH=PATH
 ;
 ;-
 
-if  n_elements(path) eq 0 then path='.'
+if  n_elements(path) eq 0 then path='../data/'
 
 COMMON htau,htau_data,htau_grid
 

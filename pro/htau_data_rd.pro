@@ -14,7 +14,7 @@ if  n_elements(path) eq 0 then begin
     path=''
     tmp='/opt/astroph/mpdr/PDRLight_1.0/data/UVdata/'
     if  file_test(tmp) then path=tmp
-    tmp=cgSourceDir()+'../data/'
+    tmp=cgSourceDir()+'../data/uvdata/'
     if  file_test(tmp) then path=tmp
 endif else begin
     if  ~file_test(path) then path='' 
@@ -155,7 +155,9 @@ for i=0,n_elements(hdata)-1 do begin
         if hdata[i].nl eq 1 then eband='Ly'
         nd=fix(hdata[i].nu)-fix(hdata[i].nl)
         if  nd le 24 then begin
-            name=eband+cggreek(letters[nd-1])
+            name=eband+cggreek(letters[nd-1])+'!6'
+            name=eband+textoidl('\'+letters[nd-1])
+            print,name
         end
     endif
     hdata[i].name=name
@@ -163,7 +165,7 @@ endfor
 
 htau_data=hdata
 
-if  n_elements(outpath) eq 0 then outpath='.'
+if  n_elements(outpath) eq 0 then outpath=cgSourceDir()+'../data/'
 
 print,''
 print,replicate('+',40)

@@ -10,7 +10,7 @@ PRO HTAU_GRID_PLOT
 
 RESOLVE_ROUTINE,'htau_grid_mkline',/is_function
 
-base_wave=[900.,2000.]
+base_wave=[900.,1500.]
 base_tau=[0.0,0.0]
 
 ; BUILD TEST MODEL1
@@ -19,22 +19,39 @@ model1={    name: 'HI_example',$
             state:replicate("H I,1,*,*,*,*,*",4),$
             n:    replicate(21.,4),$
             b:    [1,5,10,20],$
-            v:    replicate(0.0,4) }
+            v:    replicate(0.0,4) }            
+model1={    name: 'HI_example',$
+            state:["H I,1,*,*,*,*,*"],$
+            n:    [20.],$
+            b:    [10.],$
+            v:    [0.0] }            
 
 state=[ "H2,X,*,0,*,0,*",$
-    "H2,X,*,0,*,1,*",$
-    "H2,X,*,0,*,2,*",$
-    "H2,X,*,0,*,3,*",$
-    "H2,X,*,0,*,4,*",$
-    "H2,X,*,0,*,5,*",$
-    "H2,X,*,0,*,6,*",$
-    "H2,X,*,0,*,7,*",$
-    "H2,X,*,0,*,8,*",$
-    "H I,1,*,*,*,*,*"]
+        "H2,X,*,0,*,1,*",$
+        "H2,X,*,0,*,2,*",$
+        "H2,X,*,0,*,3,*",$
+        "H2,X,*,0,*,4,*",$
+        "H2,X,*,0,*,5,*",$
+        "H2,X,*,0,*,6,*",$
+        "H2,X,*,0,*,7,*",$
+        "H2,X,*,0,*,8,*",$
+        "H I,1,*,*,*,*,*"]
+n=[19.42,19.38,17.75,17.83,15.88,15.36,14.20,0.00,0.00,21.]
+;n[1:8]=0.0
+;n[-1]=0.0
+b=replicate(5.,n_elements(n))
+v=replicate(0.,n_elements(n))
+model2={    name: 'H2HImw_example',$
+            state:state,$
+            n:n,$
+            b:b,$
+            v:v}
+            ;base_wave:base_wave,$
+            ;base_tau:base_tau}
+
 state=[state,state]
-n1=[19.42,19.38,17.75,17.83,15.88,15.36,14.20,0.00,0.00,21.]
-n2=[18.50,18.50,17.50,17.50,00.00,00.00,00.00,0.00,0.00,21.]
-n=[n1,n2]
+
+n=[n,n-1.0]
 v1=replicate(272,10)
 v2=replicate(10,10)
 v=[v1,v2]
@@ -42,7 +59,7 @@ b1=replicate(4.8,10)
 b2=replicate(4.8,10)
 b=[b1,b2]
 
-model2={    name: 'H2mc_example',$
+model3={    name: 'H2mc_example',$
             state:state,$
             n:n,$
             b:b,$
@@ -50,19 +67,19 @@ model2={    name: 'H2mc_example',$
             base_wave:base_wave,$
             base_tau:base_tau}
             
-model3={    name: 'HIDI_example',$
+model4={    name: 'HIDI_example',$
             state:["H I,1,*,*,*,*,*","D I,1,*,*,*,*,*"],$
             n:    [21,20],$
             b:    [5,5],$
             v:    [0,0] }
 
-model4={    name: 'H2HD_example',$    
+model5={    name: 'H2HD_example',$    
             state:["H2,X,*,0,*,0,*","HD,X,*,0,*,0,*","HD,X,*,0,*,1,*"],$
             n:    [20,20,19],$
             b:    [5,5,5],$
             v:    [0,0,0] }
 
-model5={    name: 'H2v0j0_example',$
+model6={    name: 'H2v0j0_example',$
             state:["H2,X,*,0,*,0,*"],$
             n:    [20.],$
             b:    [0.8],$
@@ -72,7 +89,7 @@ model5={    name: 'H2v0j0_example',$
 ; BUILD TEST MODEL2
 
 model=list(model1,model2,model3,model4,model5)
-model=list(model1)
+model=list(model2)
 
 for k=0,n_elements(model)-1 do begin
     
@@ -84,7 +101,6 @@ for k=0,n_elements(model)-1 do begin
     ;endfor
     PRINT, '>> total time:   ',SYSTIME(1)-T, 'S'
     T=SYSTIME(1)
-    
     
 ;    psfile=path+'../templates/htau_grid_plot_'+model[k].name+'_dc.eps'
 ;    set_plot,'ps'
@@ -129,19 +145,19 @@ for k=0,n_elements(model)-1 do begin
     psfile=cgSourceDir()+'../plot/'+'htau_grid_plot_'+model[k].name+'.eps'
     set_plot,'ps'
     device, file=psfile, /color, bits=8, /cmyk, /encapsulated,$
-        xsize=15,ysize=15.0,/inches,xoffset=0.0,yoffset=0.0
+        xsize=20.0,ysize=20.0,/inches,xoffset=0.0,yoffset=0.0
     !p.thick=2.0
     !x.thick = 2.0
     !y.thick = 2.0
     !z.thick = 2.0
     !p.charsize=1.5
-    !p.charthick=1.0
+    !p.charthick=2.0
     xyouts,'!6'
     
     loadct,13
     wvlen=40
     wvs=900
-    ymin=-0.1
+    ymin=0.0
     ymax=1.2
     clist=findgen(20)*255/20
     cthin=6-findgen(20)*0.2
@@ -150,21 +166,61 @@ for k=0,n_elements(model)-1 do begin
     wvlen=60
     wvs=900
     ymin=-0.1
-    ymax=1.2
+    ymax=1.4
     clist=findgen(20)*255/20
     cthin=6-findgen(20)*0.2    
     
-    !P.MULTI = [0, 1, 7]
+    
+    wv_cen=[1.215668E+03,$
+            1.025722E+03,$
+            9.725366E+02,$
+            9.497429E+02,$
+            9.378034E+02,$
+            9.307482E+02,$
+            9.262256E+02]
+    wv_range=[300,$
+               50,$
+               20,$
+               30,$
+               30,$
+               30,$
+               30]
+    wv_cen=reverse(wv_cen)
+    wv_range=reverse(wv_range)                           
     
     for j=0,6 do begin
-        plot,[wvs+j*wvlen,wvs+j*wvlen+wvlen],[ymin,ymax],/nodata,$
-            xrange=[wvs+j*wvlen,wvs+j*wvlen+wvlen],$
+
+    endfor
+            
+    cc=[0.5,250.]
+    ;!P.MULTI = [0, 1, 7]
+    for j=0,6 do begin
+        pos=cglayout([1,7,j+1],oxmargin=[5,2],oymargin=[10,4],iymargin=[0,4])
+
+;        plot,[wvs+j*wvlen,wvs+j*wvlen+wvlen],[ymin,ymax],/nodata,$
+;            xrange=[wvs+j*wvlen,wvs+j*wvlen+wvlen],$
+;            yrange=[ymin,ymax],$
+;            xstyle=1,ystyle=1,/noe,pos=pos
+;            ;xstyle=5,ystyle=1
+
+;        xmax=wv_int[j]+(1.0-cc[0])*cc[1]
+;        xmin=wv_int[j]-(cc[0])*cc[1]
+;        cc[1]=(xmin-wv_int[j+1])/(1.0-cc[0])
+;        print,wv_int[j],xmin,xmax
+        xmax=wv_cen[j]+wv_range[j]*0.5
+        xmin=wv_cen[j]-wv_range[j]*0.5
+        
+        ;xmin=wvs+j*wvlen
+        ;xmax=wvs+j*wvlen+wvlen
+        
+        plot,[xmin,xmax],[ymin,ymax],/nodata,$
+            xrange=[xmin,xmax],$
             yrange=[ymin,ymax],$
-            xstyle=1,ystyle=1
-            ;xstyle=5,ystyle=1
+            xstyle=1,ystyle=1,/noe,pos=pos
+        ;xstyle=5,ystyle=1                
+            
         oplot, spec.wl,spec.fl,color=0,thick=2.0
-        print,min(spec.wl),max(spec.wl)
-        htau_plot_hmarker,[0,0],[0,1]
+        htau_plot_hmarker,0,[0,1.4]
     endfor
 ;    plot, [wvs+j*wvlen,wvs+j*wvlen+wvlen],[ymin,ymax],/nodata,$
 ;        xrange=[1140,1300],$

@@ -1,4 +1,8 @@
-FUNCTION HTAU_GRID_MKLINE, MODEL, linear=linear, decompose=decompose,obs_wl=obs_wl
+FUNCTION HTAU_GRID_MKLINE, MODEL, $
+    linear=linear,$
+    wrange=wrange,$
+    decompose=decompose,$
+    obs_wl=obs_wl
 ;+
 ; NAME:
 ;   H2TAU_GRID_MKLINE
@@ -41,7 +45,7 @@ COMMON htau,htau_data,htau_grid
 htau_grid_state_arr=htau_grid.state.toarray()
 htau_grid_doppb_arr=htau_grid.doppb.toarray()
 
-cspeed=2.998e5
+cspeed=!const.c/1d3
 
 ; SET WAVERLENGTH GRID IN THE OBS FRFAME
 
@@ -49,13 +53,24 @@ state=model.state
 vb=string(model.v)
 vb_uniq=vb[rem_dup(vb)]
 dopb=model.b[rem_dup(model.b)]
-if  min(dopb) le 2.0 then wave_samp=[1e-6,900.,120000]
-if  min(dopb) gt 2.0 then wave_samp=[3e-6,900*10.^(1e-6),40000]
+
+;   matching the grid in the htau template
+if  min(dopb) le 2.0 then wave_samp=[1e-6,900.,120000+10000]
+if  min(dopb) gt 2.0 then wave_samp=[3e-6,900*10.^(1e-6),40000+15000]
+
+if  n_elements(wrange) ne 2.0 then wrange=[900d,1300d] else wrange=[min(wrange),max(wrange)]
+
+;samp_dv=min(dopb)/10.0<1.0  ; fine internal sampling step in km/s
+;samp_rp=cspeed/samp_dv      ; fine internal "resovling power"
+;dlogwv=1./samp_rp           ; fine log(wavelength) grid step
+;ndlogwv=1L+ceil(alog10(wrange[1]/wrange[0])/dlogwv)
+;wave=wrange[0]*10.^(dindgen(ndlogwv)*dlogwv)
 
 dlogwv=wave_samp[0]
 wave=wave_samp[1]*10.^(dindgen(wave_samp[2])*wave_samp[0])
 
 obs_tau=double(wave)*0.0
+
 if keyword_set(decompose) then obs_tau_dc=fltarr(n_elements(wave),n_elements(model.state))
 
 for i=0,n_elements(vb_uniq)-1 do begin
@@ -66,7 +81,7 @@ for i=0,n_elements(vb_uniq)-1 do begin
     bandtau=double(wave*0.0)
     
     foreach ind,tag_uniq do begin
-
+        print,model.state[ind]
         n=model.n[ind]
         if not keyword_set(linear) then n=10.d^n
         tag_state=where(htau_grid_state_arr eq model.state[ind])
@@ -120,7 +135,6 @@ if  keyword_set(decompose) then begin
     obs_model_dc=1.0*exp(-obs_tau_dc)
     spec=CREATE_STRUCT(spec,'fldc',obs_model_dc)
 endif
-
 
 return,spec
 

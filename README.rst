@@ -17,7 +17,7 @@ Despite following the same idea, ``htau`` is different in several aspects:
 
 .. note::
     
-    I wrote a primitive `IDL version <./pro>`_ of ``hatu`` many years ago, which was an attempt to create similar templates to `McCandliss 2003 <https://ui.adsabs.harvard.edu/abs/2003PASP..115..651M/abstract>`_ with more efficient computing methods, finer resolution/*b*-value sampling,  and updated atomic/molecular data.
+    I wrote a primitive `IDL version <./pro>`_ of ``htau`` many years ago, which was an attempt to create similar templates to `McCandliss 2003 <https://ui.adsabs.harvard.edu/abs/2003PASP..115..651M/abstract>`_ with more efficient computing methods, finer resolution/*b*-value sampling,  and updated atomic/molecular data.
     That effort was used in `Welty, Xue, & Wong 2012 <https://ui.adsabs.harvard.edu/abs/2012ApJ...745..173W/abstract>`_.
     
  
@@ -28,4 +28,5 @@ TODO
 - parse the atomic/molecular data of H2/HD/HI/DI from sources into the linetools.LineList format
 - derive tau tables per rotational band on a log(wave)-b grid 
 - spectrum "maker" (interpolation/gridding/flux-conservation)
+- translate ``calc_igmtau.pro`` into Python
 

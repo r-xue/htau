@@ -2,3 +2,4 @@ htau.egg-info
 .vscode
 docs/_build
 .DS_Store
+htau/__pycache__
